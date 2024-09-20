@@ -66,12 +66,8 @@ h1, h2 {
   margin-bottom: 20px;
 }
 
-.add-task {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+.add-task, .bulk-add-task {
   margin-bottom: 20px;
-  flex-wrap: wrap;
 }
 
 .input-group {
@@ -96,14 +92,27 @@ h1, h2 {
   transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 }
 
-.helper-text {
-  display: block;
-  margin-top: 5px;
-  font-size: 0.9em;
-  color: var(--helper-text-color);
+.bulk-add-task h2 {
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  text-align: center;
 }
 
-.add-task button {
+.bulk-add-task textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  resize: vertical;
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: background-color 0.5s, color 0.5s, border-color 0.5s;
+  margin-bottom: 10px;
+}
+
+.bulk-add-task button {
   width: 100%;
   padding: 10px;
   background-color: var(--button-bg);
@@ -115,7 +124,7 @@ h1, h2 {
   font-size: 1em;
 }
 
-.add-task button:hover {
+.bulk-add-task button:hover {
   background-color: var(--button-hover-bg);
 }
 
@@ -141,6 +150,22 @@ h1, h2 {
   flex: 1;
   margin-right: 10px;
   word-break: break-word;
+}
+
+.edit-button {
+  background-color: #ffc107; /* Amber color */
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.3s;
+  font-size: 0.9em;
+  margin-right: 5px;
+}
+
+.edit-button:hover {
+  background-color: #e0a800; /* Darker amber on hover */
 }
 
 .delete-button {
@@ -222,6 +247,20 @@ h1, h2 {
   }
 }
 
+/* Edit Weight Input Styles */
+.edit-weight-input {
+  padding: 5px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  font-size: 0.9em;
+  transition: border-color 0.3s;
+}
+
+.edit-weight-input:focus {
+  border-color: #28a745;
+  outline: none;
+}
+
 /* Responsive Styles */
 @media (max-width: 600px) {
   .add-task {
@@ -233,6 +272,19 @@ h1, h2 {
     width: 100%;
   }
 
+  .bulk-add-task h2 {
+    font-size: 1.2em;
+  }
+
+  .bulk-add-task textarea {
+    height: 80px;
+  }
+
+  .bulk-add-task button {
+    padding: 8px;
+    font-size: 0.9em;
+  }
+
   h1, h2 {
     font-size: 1.5em;
   }
@@ -242,8 +294,8 @@ h1, h2 {
     font-size: 1em;
   }
 
-  .delete-button {
-    padding: 8px 12px;
+  .edit-button, .delete-button {
+    padding: 6px 10px;
     font-size: 0.8em;
   }
 }
@@ -255,13 +307,23 @@ h1, h2 {
     padding: 12px;   /* Increase padding for larger touch/click areas */
   }
 
-  .add-task button {
+  .bulk-add-task textarea {
     font-size: 1em;
-    padding: 12px 20px;
+    padding: 12px;
+  }
+
+  .bulk-add-task button {
+    font-size: 1em;
+    padding: 12px;
+  }
+
+  .edit-button {
+    padding: 6px 12px;
+    font-size: 1em;
   }
 
   .delete-button {
-    font-size: 0.9em;
     padding: 6px 12px;
+    font-size: 0.9em;
   }
 }
