@@ -18,8 +18,6 @@ let tasks = [];
 const taskNameInput = document.getElementById('task-name');
 const taskWeightInput = document.getElementById('task-weight');
 const addTaskButton = document.getElementById('add-task-button');
-const bulkTasksInput = document.getElementById('bulk-tasks-input');
-const bulkAddTaskButton = document.getElementById('bulk-add-task-button');
 const tasksList = document.getElementById('tasks');
 const pickTaskButton = document.getElementById('pick-task-button');
 const resultDiv = document.getElementById('result');
@@ -47,55 +45,13 @@ addTaskButton.addEventListener('click', () => {
   taskWeightInput.value = 1;
 });
 
-// Bulk Add Task
-bulkAddTaskButton.addEventListener('click', () => {
-  const bulkInput = bulkTasksInput.value.trim();
-  if (bulkInput === '') {
-    alert('Please enter tasks to add.');
-    return;
-  }
-
-  const lines = bulkInput.split('\n');
-  const newTasks = [];
-
-  for (let line of lines) {
-    // Split by comma
-    const parts = line.split(',');
-    if (parts.length !== 2) {
-      alert(`Invalid format in line: "${line}". Expected format: Task Name, Relative Importance`);
-      continue;
-    }
-
-    const name = parts[0].trim();
-    const weight = parseFloat(parts[1].trim());
-
-    if (name === '') {
-      alert(`Task name cannot be empty in line: "${line}".`);
-      continue;
-    }
-
-    if (isNaN(weight) || weight <= 0) {
-      alert(`Invalid Relative Importance in line: "${line}". Please enter a positive number.`);
-      continue;
-    }
-
-    newTasks.push({ name, weight });
-  }
-
-  if (newTasks.length > 0) {
-    tasks = tasks.concat(newTasks);
-    saveTasks();
-    renderTasks();
-    bulkTasksInput.value = '';
-    alert(`${newTasks.length} tasks added successfully.`);
-  }
-});
-
 // Render Tasks
 function renderTasks() {
   tasksList.innerHTML = '';
   tasks.forEach((task, index) => {
     const li = document.createElement('li');
+    li.classList.remove('highlight'); // Remove highlight if any
+
     li.innerHTML = `
       <span class="task-name">${task.name}</span>
       <span class="task-weight">${task.weight}</span>
@@ -110,7 +66,7 @@ function renderTasks() {
   editButtons.forEach(button => {
     button.addEventListener('click', (e) => {
       const index = e.target.getAttribute('data-index');
-      editTask(index);
+      enterEditMode(index);
     });
   });
 
@@ -119,56 +75,62 @@ function renderTasks() {
   deleteButtons.forEach(button => {
     button.addEventListener('click', (e) => {
       const index = e.target.getAttribute('data-index');
-      deleteTask(index);
+      tasks.splice(index, 1);
+      saveTasks();
+      renderTasks();
     });
   });
 }
 
-// Edit Task
-function editTask(index) {
+// Enter Edit Mode
+function enterEditMode(index) {
   const li = tasksList.children[index];
-  const task = tasks[index];
-  
-  // Replace the weight span with an input field
+  li.classList.add('highlight');
+
   const weightSpan = li.querySelector('.task-weight');
   const editButton = li.querySelector('.edit-button');
 
-  if (editButton.textContent === 'Edit') {
-    const input = document.createElement('input');
-    input.type = 'number';
-    input.min = '0.1';
-    input.step = 'any';
-    input.value = task.weight;
-    input.classList.add('edit-weight-input');
-    input.style.width = '60px';
+  // Create an input field with the current weight
+  const weightInput = document.createElement('input');
+  weightInput.type = 'number';
+  weightInput.min = '0.0001'; // Allow very small positive numbers
+  weightInput.step = 'any';
+  weightInput.value = tasks[index].weight;
+  weightInput.classList.add('edit-weight-input');
 
-    weightSpan.innerHTML = '';
-    weightSpan.appendChild(input);
-    editButton.textContent = 'Save';
-    editButton.classList.remove('edit-button');
-    editButton.classList.add('save-button');
+  // Replace the weight span with the input field
+  li.replaceChild(weightInput, weightSpan);
 
-    // Add event listener for save
-    editButton.addEventListener('click', () => {
-      const newWeight = parseFloat(input.value);
-      if (isNaN(newWeight) || newWeight <= 0) {
-        alert('Please enter a valid positive number for Relative Importance.');
-        return;
-      }
-      tasks[index].weight = newWeight;
-      saveTasks();
-      renderTasks();
-    });
-  }
+  // Change Edit button to Save button
+  editButton.textContent = 'Save';
+  editButton.classList.remove('edit-button');
+  editButton.classList.add('save-button');
+
+  // Update the aria-label
+  editButton.setAttribute('aria-label', 'Save Task');
+
+  // Add event listener to Save button
+  editButton.removeEventListener('click', () => {}); // Remove previous listeners if any
+  editButton.addEventListener('click', () => {
+    saveEdit(index, weightInput.value);
+  });
 }
 
-// Delete Task
-function deleteTask(index) {
-  if (confirm(`Are you sure you want to delete the task "${tasks[index].name}"?`)) {
-    tasks.splice(index, 1);
-    saveTasks();
-    renderTasks();
+// Save Edited Weight
+function saveEdit(index, newWeight) {
+  const trimmedWeight = newWeight.trim();
+  const parsedWeight = parseFloat(trimmedWeight);
+
+  // Validation
+  if (trimmedWeight === '' || isNaN(parsedWeight) || parsedWeight <= 0) {
+    alert('Please enter a valid positive number for Relative Importance.');
+    return;
   }
+
+  // Update the task's weight
+  tasks[index].weight = parsedWeight;
+  saveTasks();
+  renderTasks();
 }
 
 // Save Tasks to localStorage
