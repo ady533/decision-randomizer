@@ -6,7 +6,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <!-- Web App Manifest -->
+  <link rel="manifest" href="manifest.json"><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Decision Randomizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Web App Manifest -->
   <link rel="manifest" href="manifest.json">
+  
+  <!-- Favicon -->
+  <link rel="icon" href="icons/icon-192x192.png">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Decision Randomizer</h1>
+    
+    <div class="add-task">
+      <div class="input-group">
+        <label for="task-name">Task Name</label>
+        <input type="text" id="task-name" placeholder="e.g., Buy Groceries" aria-label="Task Name">
+      </div>
+      
+      <div class="input-group">
+        <label for="task-weight">
+          Relative Importance 
+          <span class="tooltip" tabindex="0" aria-label="Relative Importance: Enter a positive number to indicate how much you care about this task relative to others. Values do not need to be between 0 and 1.">
+            &#9432;
+            <span class="tooltip-text">
+              Enter a positive number to indicate how much you care about this task relative to others. Values do not need to be between 0 and 1.
+            </span>
+          </span>
+        </label>
+        <input type="number" id="task-weight" placeholder="e.g., 5" min="1" aria-label="Task Weight">
+        <small class="helper-text">
+          Enter a positive number to indicate how much you care about this task relative to others.<br>
+          <em>Note:</em> Values do not need to be between 0 and 1.
+        </small>
+      </div>
+      
+      <button id="add-task-button" aria-label="Add Task">Add Task</button>
+    </div>
+    
+    <div class="task-list">
+      <h2>Tasks</h2>
+      <ul id="tasks">
+        <!-- Tasks will be appended here -->
+      </ul>
+    </div>
+    
+    <button id="pick-task-button" aria-label="Pick a Task">Pick a Task</button>
+    
+    <div id="result">
+      <!-- Selected task will be displayed here -->
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
   
   <!-- Favicon -->
   <link rel="icon" href="icons/icon-192x192.png">
