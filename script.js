@@ -114,5 +114,4 @@ pickTaskButton.addEventListener('click', () => {
 
   // Fallback in case of floating point precision issues
   resultDiv.textContent = `Selected Task: ${normalizedTasks[normalizedTasks.length - 1].name}`;
-}
-);
+});
