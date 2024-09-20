@@ -12,8 +12,6 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Existing JavaScript code below...
-
 let tasks = [];
 
 // Elements
@@ -29,8 +27,14 @@ addTaskButton.addEventListener('click', () => {
   const name = taskNameInput.value.trim();
   const weight = parseFloat(taskWeightInput.value);
 
-  if (name === '' || isNaN(weight) || weight <= 0) {
-    alert('Please enter a valid task name and a positive weight.');
+  // Validation
+  if (name === '') {
+    alert('Please enter a valid task name.');
+    return;
+  }
+
+  if (isNaN(weight) || weight <= 0) {
+    alert('Please enter a positive number for Relative Importance.');
     return;
   }
 
@@ -110,4 +114,5 @@ pickTaskButton.addEventListener('click', () => {
 
   // Fallback in case of floating point precision issues
   resultDiv.textContent = `Selected Task: ${normalizedTasks[normalizedTasks.length - 1].name}`;
-});
+}
+);
