@@ -80,3 +80,133 @@ h1, h2 {
   font-size: 1.2em;
   min-height: 1.2em;
 }
+
+/* Existing styles.css */
+
+/* Light Mode (Default) */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  width: 90%;
+  max-width: 600px;
+  margin: 50px auto;
+  background: #fff;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2 {
+  text-align: center;
+}
+
+.add-task {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.add-task input {
+  width: 40%;
+  padding: 10px;
+  margin-right: 10px;
+}
+
+.add-task button {
+  padding: 10px 20px;
+}
+
+.task-list ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.task-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
+}
+
+#pick-task-button {
+  width: 100%;
+  padding: 15px;
+  background-color: #28a745;
+  border: none;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+#pick-task-button:hover {
+  background-color: #218838;
+}
+
+#result {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 1.2em;
+  min-height: 1.2em;
+}
+
+/* Dark Mode Styles */
+.dark-mode body {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode .container {
+  background: #1e1e1e;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.dark-mode .add-task input {
+  background-color: #2c2c2c;
+  color: #e0e0e0;
+  border: 1px solid #444;
+}
+
+.dark-mode .add-task button {
+  background-color: #3a3a3a;
+  color: #e0e0e0;
+}
+
+.dark-mode .task-list li {
+  border-bottom: 1px solid #444;
+}
+
+.dark-mode .delete-button {
+  background-color: #ff6b6b;
+}
+
+.dark-mode .delete-button:hover {
+  background-color: #ff4c4c;
+}
+
+.dark-mode #pick-task-button {
+  background-color: #4caf50;
+}
+
+.dark-mode #pick-task-button:hover {
+  background-color: #43a047;
+}
+
