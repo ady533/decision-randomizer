@@ -1,5 +1,19 @@
 // script.js
 
+// Register the service worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful with scope:', registration.scope);
+      }, err => {
+        console.log('ServiceWorker registration failed:', err);
+      });
+  });
+}
+
+// Existing JavaScript code below...
+
 let tasks = [];
 
 // Elements
@@ -35,7 +49,7 @@ function renderTasks() {
     li.innerHTML = `
       <span>${task.name}</span>
       <span>${task.weight}</span>
-      <button class="delete-button" data-index="${index}">Delete</button>
+      <button class="delete-button" data-index="${index}" aria-label="Delete Task">Delete</button>
     `;
     tasksList.appendChild(li);
   });
