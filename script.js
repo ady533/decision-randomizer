@@ -1,3 +1,5 @@
+// script.js
+
 let tasks = [];
 
 // Elements
@@ -7,15 +9,6 @@ const addTaskButton = document.getElementById('add-task-button');
 const tasksList = document.getElementById('tasks');
 const pickTaskButton = document.getElementById('pick-task-button');
 const resultDiv = document.getElementById('result');
-
-// Load tasks from localStorage on page load
-window.onload = () => {
-  const storedTasks = localStorage.getItem('tasks');
-  if (storedTasks) {
-    tasks = JSON.parse(storedTasks);
-    renderTasks();
-  }
-};
 
 // Add Task
 addTaskButton.addEventListener('click', () => {
@@ -62,6 +55,15 @@ function renderTasks() {
 // Save Tasks to localStorage
 function saveTasks() {
   localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Load tasks from localStorage on page load
+window.onload = () => {
+  const storedTasks = localStorage.getItem('tasks');
+  if (storedTasks) {
+    tasks = JSON.parse(storedTasks);
+    renderTasks();
+  }
 }
 
 // Normalize Weights
