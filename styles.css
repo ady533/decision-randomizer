@@ -7,12 +7,12 @@
   --container-bg: #ffffff;
   --button-bg: #28a745;
   --button-hover-bg: #218838;
-  --edit-button-bg: #007bff;
-  --edit-button-hover-bg: #0069d9;
-  --save-button-bg: #ffc107;
-  --save-button-hover-bg: #e0a800;
   --delete-button-bg: #dc3545;
   --delete-button-hover-bg: #c82333;
+  --edit-button-bg: #007bff;
+  --edit-button-hover-bg: #0056b3;
+  --save-button-bg: #ffc107;
+  --save-button-hover-bg: #e0a800;
   --input-bg: #ffffff;
   --input-text-color: #333333;
   --input-border: #cccccc;
@@ -21,6 +21,12 @@
   --header-font-size: 2em;
   --helper-text-color: #666666;
   --highlight-color: #d1ecf1;
+  --nav-link-color: #007bff;
+  --nav-link-hover-color: #0056b3;
+  --notification-success-bg: #d4edda;
+  --notification-success-text: #155724;
+  --notification-error-bg: #f8d7da;
+  --notification-error-text: #721c24;
 }
 
 /* CSS Variables for Dark Mode */
@@ -31,12 +37,12 @@
     --container-bg: #1e1e1e;
     --button-bg: #4caf50;
     --button-hover-bg: #43a047;
+    --delete-button-bg: #ff6b6b;
+    --delete-button-hover-bg: #ff4c4c;
     --edit-button-bg: #17a2b8;
     --edit-button-hover-bg: #138496;
     --save-button-bg: #ffc107;
     --save-button-hover-bg: #e0a800;
-    --delete-button-bg: #ff6b6b;
-    --delete-button-hover-bg: #ff4c4c;
     --input-bg: #2c2c2c;
     --input-text-color: #e0e0e0;
     --input-border: #444444;
@@ -45,6 +51,12 @@
     --header-font-size: 2em;
     --helper-text-color: #bbbbbb;
     --highlight-color: #375a7f;
+    --nav-link-color: #66b2ff;
+    --nav-link-hover-color: #3399ff;
+    --notification-success-bg: #155724;
+    --notification-success-text: #d4edda;
+    --notification-error-bg: #721c24;
+    --notification-error-text: #f8d7da;
   }
 }
 
@@ -70,10 +82,54 @@ body {
   border-radius: 8px;
 }
 
-h1, h2 {
+header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+h1 {
   text-align: center;
   font-size: var(--header-font-size);
+  margin-bottom: 10px;
+}
+
+nav {
+  margin-top: 10px;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--nav-link-color);
+  font-size: 1em;
+  transition: color 0.3s;
+}
+
+.nav-link:hover {
+  color: var(--nav-link-hover-color);
+}
+
+.notification {
+  padding: 10px 20px;
+  border-radius: 5px;
   margin-bottom: 20px;
+  text-align: center;
+  font-size: 0.95em;
+}
+
+.notification.success {
+  background-color: var(--notification-success-bg);
+  color: var(--notification-success-text);
+}
+
+.notification.error {
+  background-color: var(--notification-error-bg);
+  color: var(--notification-error-text);
+}
+
+.hidden {
+  display: none;
 }
 
 .add-task {
@@ -106,11 +162,9 @@ h1, h2 {
   transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 }
 
-.helper-text {
-  display: block;
-  margin-top: 5px;
-  font-size: 0.9em;
-  color: var(--helper-text-color);
+.input-group input:focus {
+  border-color: var(--button-bg);
+  outline: none;
 }
 
 .add-task button {
@@ -151,34 +205,6 @@ h1, h2 {
   flex: 1;
   margin-right: 10px;
   word-break: break-word;
-}
-
-.task-list li.highlight {
-  background-color: var(--highlight-color);
-}
-
-.edit-button, .save-button {
-  background-color: var(--edit-button-bg);
-  border: none;
-  color: white;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 4px;
-  margin-right: 5px;
-  transition: background-color 0.3s;
-  font-size: 0.9em;
-}
-
-.edit-button:hover {
-  background-color: var(--edit-button-hover-bg);
-}
-
-.save-button {
-  background-color: var(--save-button-bg);
-}
-
-.save-button:hover {
-  background-color: var(--save-button-hover-bg);
 }
 
 .delete-button {
@@ -280,9 +306,13 @@ h1, h2 {
     font-size: 1em;
   }
 
-  .delete-button, .edit-button, .save-button {
+  .delete-button {
     padding: 8px 12px;
     font-size: 0.8em;
+  }
+
+  .nav-link {
+    font-size: 1em;
   }
 }
 
@@ -303,59 +333,26 @@ h1, h2 {
     padding: 6px 12px;
   }
 
-  .edit-button, .save-button {
-    font-size: 0.9em;
-    padding: 6px 12px;
+  .nav-link {
+    font-size: 1em;
+  }
+
+  .notification {
+    font-size: 0.95em;
   }
 }
 
-/* styles.css */
-
-/* ... [Existing CSS as provided above] ... */
-
-/* Highlighted Task in Edit Mode */
-.task-list li.highlight {
-  background-color: var(--highlight-color);
+/* Notification Styles */
+.notification.hidden {
+  display: none;
 }
 
-/* Styles for Weight Input in Edit Mode */
-.edit-weight-input {
-  width: 60px;
-  padding: 5px;
-  font-size: 0.9em;
-  border: 1px solid var(--input-border);
-  border-radius: 4px;
-  background-color: var(--input-bg);
-  color: var(--input-text-color);
-  box-sizing: border-box;
-  transition: background-color 0.5s, color 0.5s, border-color 0.5s;
+.notification.success {
+  background-color: var(--notification-success-bg);
+  color: var(--notification-success-text);
 }
 
-/* Adjust Task Name Styling */
-.task-name {
-  font-weight: bold;
-}
-
-/* Save Button Specific Styles */
-.save-button {
-  background-color: var(--save-button-bg);
-}
-
-.save-button:hover {
-  background-color: var(--save-button-hover-bg);
-}
-
-/* Responsive Adjustments for Edit Mode */
-@media (max-width: 600px) {
-  /* Adjust width of the weight input for smaller screens */
-  .edit-weight-input {
-    width: 100px;
-  }
-}
-
-@media (min-width: 601px) {
-  /* Larger width for weight input on desktop */
-  .edit-weight-input {
-    width: 80px;
-  }
+.notification.error {
+  background-color: var(--notification-error-bg);
+  color: var(--notification-error-text);
 }
