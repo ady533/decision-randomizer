@@ -15,7 +15,16 @@
 </head>
 <body>
   <div class="container">
-    <h1>Decision Randomizer</h1>
+    <header>
+      <h1>Decision Randomizer</h1>
+      <!-- Navigation Link to Focus Timer -->
+      <nav>
+        <a href="https://ady533.github.io/log-extension-timer/" class="nav-link">Focus Timer</a>
+      </nav>
+    </header>
+    
+    <!-- Notification Area -->
+    <div id="notification" class="notification hidden"></div>
     
     <div class="add-task">
       <div class="input-group">
@@ -33,7 +42,7 @@
             </span>
           </span>
         </label>
-        <input type="number" id="task-weight" placeholder="e.g., 5" min="1" step="any" aria-label="Task Weight">
+        <input type="number" id="task-weight" placeholder="e.g., 5" min="0.0001" step="any" aria-label="Task Weight">
         <!-- Helper text removed as per your request -->
       </div>
       
@@ -54,6 +63,7 @@
     </div>
   </div>
 
+  <!-- Link to JavaScript -->
   <script src="script.js"></script>
 </body>
 </html>
