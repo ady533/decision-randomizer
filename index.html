@@ -3,7 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Decision Randomizer</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Add this line -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- Favicon (Optional) -->
+  <link rel="icon" href="icons/icon-192x192.png">
+  
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,9 +18,9 @@
     <h1>Decision Randomizer</h1>
     
     <div class="add-task">
-      <input type="text" id="task-name" placeholder="Task Name">
-      <input type="number" id="task-weight" placeholder="Weight" min="1" value="1">
-      <button id="add-task-button">Add Task</button>
+      <input type="text" id="task-name" placeholder="Task Name" aria-label="Task Name">
+      <input type="number" id="task-weight" placeholder="Weight" min="1" value="1" aria-label="Task Weight">
+      <button id="add-task-button" aria-label="Add Task">Add Task</button>
     </div>
     
     <div class="task-list">
@@ -23,7 +30,7 @@
       </ul>
     </div>
     
-    <button id="pick-task-button">Pick a Task</button>
+    <button id="pick-task-button" aria-label="Pick a Task">Pick a Task</button>
     
     <div id="result">
       <!-- Selected task will be displayed here -->
