@@ -13,6 +13,8 @@
   --input-text-color: #333333;
   --input-border: #cccccc;
   --task-border: #dddddd;
+  --font-size: 16px;
+  --header-font-size: 2em;
 }
 
 /* CSS Variables for Dark Mode */
@@ -29,6 +31,8 @@
     --input-text-color: #e0e0e0;
     --input-border: #444444;
     --task-border: #444444;
+    --font-size: 16px;
+    --header-font-size: 2em;
   }
 }
 
@@ -40,6 +44,7 @@ body {
   margin: 0;
   padding: 0;
   transition: background-color 0.5s, color 0.5s;
+  font-size: var(--font-size);
 }
 
 .container {
@@ -50,37 +55,45 @@ body {
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   transition: background-color 0.5s, box-shadow 0.5s;
+  border-radius: 8px;
 }
 
 h1, h2 {
   text-align: center;
+  font-size: var(--header-font-size);
+  margin-bottom: 20px;
 }
 
 .add-task {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .add-task input {
-  width: 40%;
+  width: 48%;
   padding: 10px;
-  margin-right: 10px;
+  margin-bottom: 10px;
   background-color: var(--input-bg);
   color: var(--input-text-color);
   border: 1px solid var(--input-border);
   border-radius: 4px;
+  box-sizing: border-box;
   transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 }
 
 .add-task button {
-  padding: 10px 20px;
+  width: 100%;
+  padding: 10px;
   background-color: var(--button-bg);
   border: none;
   color: white;
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.3s;
+  font-size: 1em;
 }
 
 .add-task button:hover {
@@ -101,6 +114,10 @@ h1, h2 {
   transition: border-color 0.5s;
 }
 
+.task-list li:last-child {
+  border-bottom: none;
+}
+
 .delete-button {
   background-color: var(--delete-button-bg);
   border: none;
@@ -109,6 +126,7 @@ h1, h2 {
   cursor: pointer;
   border-radius: 4px;
   transition: background-color 0.3s;
+  font-size: 0.9em;
 }
 
 .delete-button:hover {
@@ -121,7 +139,7 @@ h1, h2 {
   background-color: var(--button-bg);
   border: none;
   color: white;
-  font-size: 16px;
+  font-size: 1em;
   cursor: pointer;
   margin-top: 20px;
   border-radius: 4px;
@@ -137,4 +155,35 @@ h1, h2 {
   text-align: center;
   font-size: 1.2em;
   min-height: 1.2em;
+}
+
+/* Responsive Styles */
+@media (max-width: 600px) {
+  .add-task {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .add-task input {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .add-task button {
+    font-size: 1em;
+  }
+
+  h1, h2 {
+    font-size: 1.5em;
+  }
+
+  #pick-task-button {
+    padding: 12px;
+    font-size: 1em;
+  }
+
+  .delete-button {
+    padding: 8px 12px;
+    font-size: 0.8em;
+  }
 }
