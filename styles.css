@@ -7,6 +7,10 @@
   --container-bg: #ffffff;
   --button-bg: #28a745;
   --button-hover-bg: #218838;
+  --edit-button-bg: #007bff;
+  --edit-button-hover-bg: #0069d9;
+  --save-button-bg: #ffc107;
+  --save-button-hover-bg: #e0a800;
   --delete-button-bg: #dc3545;
   --delete-button-hover-bg: #c82333;
   --input-bg: #ffffff;
@@ -16,6 +20,7 @@
   --font-size: 16px;
   --header-font-size: 2em;
   --helper-text-color: #666666;
+  --highlight-color: #d1ecf1;
 }
 
 /* CSS Variables for Dark Mode */
@@ -26,6 +31,10 @@
     --container-bg: #1e1e1e;
     --button-bg: #4caf50;
     --button-hover-bg: #43a047;
+    --edit-button-bg: #17a2b8;
+    --edit-button-hover-bg: #138496;
+    --save-button-bg: #ffc107;
+    --save-button-hover-bg: #e0a800;
     --delete-button-bg: #ff6b6b;
     --delete-button-hover-bg: #ff4c4c;
     --input-bg: #2c2c2c;
@@ -35,6 +44,7 @@
     --font-size: 16px;
     --header-font-size: 2em;
     --helper-text-color: #bbbbbb;
+    --highlight-color: #375a7f;
   }
 }
 
@@ -66,8 +76,12 @@ h1, h2 {
   margin-bottom: 20px;
 }
 
-.add-task, .bulk-add-task {
+.add-task {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 .input-group {
@@ -92,27 +106,14 @@ h1, h2 {
   transition: background-color 0.5s, color 0.5s, border-color 0.5s;
 }
 
-.bulk-add-task h2 {
-  font-size: 1.5em;
-  margin-bottom: 10px;
-  text-align: center;
+.helper-text {
+  display: block;
+  margin-top: 5px;
+  font-size: 0.9em;
+  color: var(--helper-text-color);
 }
 
-.bulk-add-task textarea {
-  width: 100%;
-  height: 100px;
-  padding: 10px;
-  resize: vertical;
-  background-color: var(--input-bg);
-  color: var(--input-text-color);
-  border: 1px solid var(--input-border);
-  border-radius: 4px;
-  box-sizing: border-box;
-  transition: background-color 0.5s, color 0.5s, border-color 0.5s;
-  margin-bottom: 10px;
-}
-
-.bulk-add-task button {
+.add-task button {
   width: 100%;
   padding: 10px;
   background-color: var(--button-bg);
@@ -124,7 +125,7 @@ h1, h2 {
   font-size: 1em;
 }
 
-.bulk-add-task button:hover {
+.add-task button:hover {
   background-color: var(--button-hover-bg);
 }
 
@@ -152,20 +153,32 @@ h1, h2 {
   word-break: break-word;
 }
 
-.edit-button {
-  background-color: #ffc107; /* Amber color */
+.task-list li.highlight {
+  background-color: var(--highlight-color);
+}
+
+.edit-button, .save-button {
+  background-color: var(--edit-button-bg);
   border: none;
   color: white;
   padding: 5px 10px;
   cursor: pointer;
   border-radius: 4px;
+  margin-right: 5px;
   transition: background-color 0.3s;
   font-size: 0.9em;
-  margin-right: 5px;
 }
 
 .edit-button:hover {
-  background-color: #e0a800; /* Darker amber on hover */
+  background-color: var(--edit-button-hover-bg);
+}
+
+.save-button {
+  background-color: var(--save-button-bg);
+}
+
+.save-button:hover {
+  background-color: var(--save-button-hover-bg);
 }
 
 .delete-button {
@@ -247,20 +260,6 @@ h1, h2 {
   }
 }
 
-/* Edit Weight Input Styles */
-.edit-weight-input {
-  padding: 5px;
-  border: 1px solid #cccccc;
-  border-radius: 4px;
-  font-size: 0.9em;
-  transition: border-color 0.3s;
-}
-
-.edit-weight-input:focus {
-  border-color: #28a745;
-  outline: none;
-}
-
 /* Responsive Styles */
 @media (max-width: 600px) {
   .add-task {
@@ -272,19 +271,6 @@ h1, h2 {
     width: 100%;
   }
 
-  .bulk-add-task h2 {
-    font-size: 1.2em;
-  }
-
-  .bulk-add-task textarea {
-    height: 80px;
-  }
-
-  .bulk-add-task button {
-    padding: 8px;
-    font-size: 0.9em;
-  }
-
   h1, h2 {
     font-size: 1.5em;
   }
@@ -294,8 +280,8 @@ h1, h2 {
     font-size: 1em;
   }
 
-  .edit-button, .delete-button {
-    padding: 6px 10px;
+  .delete-button, .edit-button, .save-button {
+    padding: 8px 12px;
     font-size: 0.8em;
   }
 }
@@ -307,23 +293,18 @@ h1, h2 {
     padding: 12px;   /* Increase padding for larger touch/click areas */
   }
 
-  .bulk-add-task textarea {
+  .add-task button {
     font-size: 1em;
-    padding: 12px;
-  }
-
-  .bulk-add-task button {
-    font-size: 1em;
-    padding: 12px;
-  }
-
-  .edit-button {
-    padding: 6px 12px;
-    font-size: 1em;
+    padding: 12px 20px;
   }
 
   .delete-button {
-    padding: 6px 12px;
     font-size: 0.9em;
+    padding: 6px 12px;
+  }
+
+  .edit-button, .save-button {
+    font-size: 0.9em;
+    padding: 6px 12px;
   }
 }
