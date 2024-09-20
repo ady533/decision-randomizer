@@ -17,6 +17,7 @@
   <div class="container">
     <h1>Decision Randomizer</h1>
     
+    <!-- Add Task Section -->
     <div class="add-task">
       <div class="input-group">
         <label for="task-name">Task Name</label>
@@ -33,13 +34,20 @@
             </span>
           </span>
         </label>
-        <input type="number" id="task-weight" placeholder="e.g., 5" min="1" step="any" aria-label="Task Weight">
-        <!-- Helper text removed as per request -->
+        <input type="number" id="task-weight" placeholder="e.g., 5" min="0.1" step="any" aria-label="Task Weight">
       </div>
       
       <button id="add-task-button" aria-label="Add Task">Add Task</button>
     </div>
     
+    <!-- Bulk Add Task Section -->
+    <div class="bulk-add-task">
+      <h2>Bulk Add Tasks</h2>
+      <textarea id="bulk-tasks-input" placeholder="Enter tasks in the format: Task Name, Relative Importance&#10;e.g., Buy Groceries, 5" aria-label="Bulk Tasks Input"></textarea>
+      <button id="bulk-add-task-button" aria-label="Bulk Add Tasks">Add Tasks</button>
+    </div>
+    
+    <!-- Task List Section -->
     <div class="task-list">
       <h2>Tasks</h2>
       <ul id="tasks">
