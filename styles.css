@@ -247,3 +247,21 @@ h1, h2 {
     font-size: 0.8em;
   }
 }
+
+/* Additional Desktop Enhancements */
+@media (min-width: 601px) {
+  .input-group input {
+    font-size: 1em; /* Increase font size for better readability */
+    padding: 12px;   /* Increase padding for larger touch/click areas */
+  }
+
+  .add-task button {
+    font-size: 1em;
+    padding: 12px 20px;
+  }
+
+  .delete-button {
+    font-size: 0.9em;
+    padding: 6px 12px;
+  }
+}
