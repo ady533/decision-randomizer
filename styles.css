@@ -308,3 +308,54 @@ h1, h2 {
     padding: 6px 12px;
   }
 }
+
+/* styles.css */
+
+/* ... [Existing CSS as provided above] ... */
+
+/* Highlighted Task in Edit Mode */
+.task-list li.highlight {
+  background-color: var(--highlight-color);
+}
+
+/* Styles for Weight Input in Edit Mode */
+.edit-weight-input {
+  width: 60px;
+  padding: 5px;
+  font-size: 0.9em;
+  border: 1px solid var(--input-border);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  box-sizing: border-box;
+  transition: background-color 0.5s, color 0.5s, border-color 0.5s;
+}
+
+/* Adjust Task Name Styling */
+.task-name {
+  font-weight: bold;
+}
+
+/* Save Button Specific Styles */
+.save-button {
+  background-color: var(--save-button-bg);
+}
+
+.save-button:hover {
+  background-color: var(--save-button-hover-bg);
+}
+
+/* Responsive Adjustments for Edit Mode */
+@media (max-width: 600px) {
+  /* Adjust width of the weight input for smaller screens */
+  .edit-weight-input {
+    width: 100px;
+  }
+}
+
+@media (min-width: 601px) {
+  /* Larger width for weight input on desktop */
+  .edit-weight-input {
+    width: 80px;
+  }
+}
