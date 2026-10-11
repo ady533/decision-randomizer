@@ -102,7 +102,8 @@ docker compose up -d --build              # option A
 sudo systemctl restart decision-randomizer # option B
 ```
 
-Open devices pick up the new version on their next reload.
+Devices cache the app so it opens instantly; they pick up a new version on the
+second reload after an update.
 
 ### Backups
 
@@ -124,11 +125,12 @@ tasks.example.com {
 ## How sync works
 
 Each device keeps its own copy and works offline. When it's connected, changes
-are sent to the server, and the device checks for changes from other devices
-when it regains focus or comes back online. If two devices both changed tasks
-while apart, the one that syncs second loads the server's copy and shows a
-notice. The first time you connect a device that already has tasks to a server
-that also has tasks, the app asks which copy to keep.
+are sent to the server straight away, and the device checks for changes from
+other devices every few seconds while the page is open, and whenever it comes
+back to the foreground or online. If two devices both changed tasks while
+apart, the changes are merged task by task: adds, edits and deletes from both
+are kept. If both edited the same task, the device that syncs second wins, and
+an edit beats a delete.
 
 Configuration (environment variables):
 
