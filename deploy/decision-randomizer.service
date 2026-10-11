@@ -1,0 +1,24 @@
+# systemd unit for running without Docker. See README "Option B".
+[Unit]
+Description=Decision Randomizer
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=decision-randomizer
+WorkingDirectory=/opt/decision-randomizer
+EnvironmentFile=/etc/decision-randomizer.env
+Environment=HOST=127.0.0.1
+Environment=PORT=8080
+Environment=DATA_FILE=/var/lib/decision-randomizer/state.json
+StateDirectory=decision-randomizer
+ExecStart=/usr/bin/env node server/server.js
+Restart=on-failure
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
