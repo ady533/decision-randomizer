@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Decision Randomizer</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#28a745">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon-192x192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Decision Randomizer</h1>
+    </header>
+
+    <div id="notification" class="notification hidden" role="status" aria-live="polite"></div>
+
+    <form id="add-task-form" class="add-task">
+      <div class="input-group">
+        <label for="task-name">Task Name</label>
+        <input type="text" id="task-name" placeholder="e.g., Buy Groceries" maxlength="200" autocomplete="off">
+      </div>
+
+      <div class="input-group">
+        <label for="task-weight">
+          Relative Importance
+          <span class="tooltip" tabindex="0" aria-label="Relative Importance: Enter a positive number to indicate how much you care about this task relative to others. Values do not need to be between 0 and 1.">
+            &#9432;
+            <span class="tooltip-text">
+              Enter a positive number to indicate how much you care about this task relative to others. Values do not need to be between 0 and 1.
+            </span>
+          </span>
+        </label>
+        <input type="number" id="task-weight" placeholder="e.g., 5" min="0.0001" step="any" value="1">
+      </div>
+
+      <button type="submit" id="add-task-button">Add Task</button>
+    </form>
+
+    <section class="task-list">
+      <h2>Tasks</h2>
+      <p id="empty-tasks" class="muted">No tasks yet. Add one above.</p>
+      <ul id="tasks"></ul>
+    </section>
+
+    <button type="button" id="pick-task-button">Pick a Task</button>
+
+    <div id="result" aria-live="polite">
+      <p id="result-text"></p>
+      <div id="result-actions" class="result-actions hidden">
+        <button type="button" id="done-button" class="done-button">Done, remove it</button>
+        <button type="button" id="pick-again-button" class="secondary-button">Pick again</button>
+      </div>
+    </div>
+
+    <details id="history-section" class="panel">
+      <summary>Recent picks</summary>
+      <p id="empty-history" class="muted">Nothing picked yet.</p>
+      <ol id="history"></ol>
+      <button type="button" id="clear-history-button" class="secondary-button hidden">Clear history</button>
+    </details>
+
+    <details id="sync-section" class="panel hidden">
+      <summary>Sync <span id="sync-status" class="muted"></span></summary>
+      <form id="sync-form" class="sync-form">
+        <label for="sync-password">Server password</label>
+        <input type="password" id="sync-password" autocomplete="current-password">
+        <button type="submit">Connect</button>
+      </form>
+      <div id="sync-connected" class="hidden">
+        <p class="muted">Tasks sync with this server across your devices.</p>
+        <button type="button" id="sync-now-button" class="secondary-button">Sync now</button>
+        <button type="button" id="sync-disconnect-button" class="secondary-button">Disconnect</button>
+      </div>
+    </details>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

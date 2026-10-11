@@ -1,0 +1,15 @@
+{
+  "name": "decision-randomizer",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Weighted random task picker, with an optional self-hosted sync server.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node server/server.js",
+    "test": "node --test"
+  }
+}
