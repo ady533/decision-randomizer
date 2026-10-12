@@ -1,5 +1,5 @@
 import { chances, formatChance, pickWeighted } from './picker.js';
-import { LIMITS, cleanData, isValidWeight, loadState, makeId, saveState } from './state.js';
+import { LIMITS, cleanData, isValidWeight, loadState, makeId, mergeData, saveState } from './state.js';
 import { AuthError, createSyncClient } from './sync.js';
 
 if ('serviceWorker' in navigator) {
@@ -298,6 +298,7 @@ const sync = createSyncClient({ storage });
 let syncTimer;
 let syncing = false;
 let syncAgain = false;
+const AUTO_SYNC_MS = 10_000;
 
 function isConnected() {
   return Boolean(sync.getPassword());
@@ -316,49 +317,49 @@ function scheduleSync() {
   syncTimer = setTimeout(runSync, 400);
 }
 
-function adoptServerState(server) {
-  state = { ...cleanData(server), version: server.version, dirty: false };
+// Replaces this device's data, keeping the open edit row and result only if
+// their tasks still exist.
+function replaceData(data, { version, dirty, base }) {
+  state = { ...data, version, dirty, base };
   if (editingId && !state.tasks.some(t => t.id === editingId)) editingId = null;
   if (pickedId && !state.tasks.some(t => t.id === pickedId)) clearResult();
   saveState(storage, state);
   render();
 }
 
-// Brings this device and the server in line. Local changes win unless another
-// device saved in the meantime, in which case the server's copy is loaded.
-async function runSync({ firstConnect = false } = {}) {
+// Brings this device and the server in line. If another device saved in the
+// meantime, its changes are merged with this device's, task by task.
+async function runSync() {
   if (!isConnected()) return;
   if (syncing) { syncAgain = true; return; }
   syncing = true;
   renderSync('(syncing…)');
   try {
     const server = await sync.pull();
-    if (firstConnect && server.version > 0 && state.dirty && state.tasks.length > 0) {
-      const useServer = confirm(
-        `The server already has ${server.tasks.length} task(s). ` +
-        'OK loads the server\'s tasks on this device. Cancel replaces the server\'s tasks with this device\'s.');
-      if (useServer) adoptServerState(server);
-      else state.version = server.version;
+    const serverData = cleanData(server);
+    if (server.version !== state.version) {
+      if (state.dirty) {
+        const merged = mergeData(state.base, cleanData(state), serverData);
+        const dirty = JSON.stringify(merged) !== JSON.stringify(serverData);
+        replaceData(merged, { version: server.version, dirty, base: serverData });
+      } else {
+        replaceData(serverData, { version: server.version, dirty: false, base: serverData });
+      }
     }
     if (state.dirty) {
-      if (state.version !== server.version) {
-        adoptServerState(server);
-        showNotification('Another device changed your tasks, so the latest version was loaded.', 'error');
+      const editsBeforePush = editCount;
+      const pushed = cleanData(state);
+      const result = await sync.push(pushed, state.version);
+      if (result.ok) {
+        state.version = result.version;
+        state.base = pushed;
+        state.dirty = editCount !== editsBeforePush;
+        saveState(storage, state);
+        if (state.dirty) syncAgain = true;
       } else {
-        const editsBeforePush = editCount;
-        const result = await sync.push(cleanData(state), state.version);
-        if (result.ok) {
-          state.version = result.version;
-          state.dirty = editCount !== editsBeforePush;
-          saveState(storage, state);
-          if (state.dirty) syncAgain = true;
-        } else {
-          adoptServerState(result.state);
-          showNotification('Another device changed your tasks, so the latest version was loaded.', 'error');
-        }
+        // Another device saved between our pull and push: go round again and merge.
+        syncAgain = true;
       }
-    } else if (server.version !== state.version) {
-      adoptServerState(server);
     }
     renderSync();
   } catch (err) {
@@ -386,7 +387,7 @@ el.syncForm.addEventListener('submit', async event => {
   sync.setPassword(password);
   el.syncPassword.value = '';
   renderSync();
-  await runSync({ firstConnect: true });
+  await runSync();
   if (isConnected()) showNotification('Connected to sync.');
 });
 
@@ -399,6 +400,15 @@ el.syncDisconnectButton.addEventListener('click', () => {
 
 window.addEventListener('focus', () => runSync());
 window.addEventListener('online', () => runSync());
+// Phones resume a home-screen app without a focus event.
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'visible') runSync();
+});
+// Pick up other devices' changes while the page is open. Skipped while a task
+// is being edited so the row isn't redrawn under the user's typing.
+setInterval(() => {
+  if (document.visibilityState === 'visible' && !editingId) runSync();
+}, AUTO_SYNC_MS);
 
 sync.isAvailable().then(available => {
   if (!available) return;

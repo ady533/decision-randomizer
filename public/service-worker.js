@@ -1,7 +1,8 @@
-// Network first, cache as fallback: online users always get the latest
-// version, and the last version seen keeps working offline.
+// Cache first, refreshed in the background: the app opens instantly even on
+// a slow link and works offline. A new version shows on the reload after the
+// one that fetched it.
 // Bump CACHE_NAME when the precache list changes.
-const CACHE_NAME = 'decision-randomizer-v2';
+const CACHE_NAME = 'decision-randomizer-v3';
 const PRECACHE = [
   './',
   'index.html',
@@ -37,15 +38,15 @@ self.addEventListener('fetch', event => {
   // Leave the sync API and anything cross-origin to the network.
   if (request.method !== 'GET' || url.origin !== self.location.origin || url.pathname.includes('/api/')) return;
 
+  const refresh = fetch(request).then(response => {
+    if (response.ok && response.type === 'basic') {
+      const copy = response.clone();
+      return caches.open(CACHE_NAME).then(cache => cache.put(request, copy)).then(() => response);
+    }
+    return response;
+  });
+  event.waitUntil(refresh.catch(() => {}));
   event.respondWith(
-    fetch(request)
-      .then(response => {
-        if (response.ok && response.type === 'basic') {
-          const copy = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
-        }
-        return response;
-      })
-      .catch(() => caches.match(request).then(cached => cached || caches.match('index.html')))
+    caches.match(request).then(cached => cached || refresh.catch(() => caches.match('index.html')))
   );
 });

@@ -17,9 +17,14 @@ export function makeId() {
 }
 
 // `version` is the last server version this device has seen (0 = never synced);
-// `dirty` means there are local changes the server hasn't received yet.
+// `dirty` means there are local changes the server hasn't received yet;
+// `base` is the data as of that server version, used to merge with other devices.
 export function emptyState() {
-  return { tasks: [], history: [], version: 0, dirty: false };
+  return { tasks: [], history: [], version: 0, dirty: false, base: emptyData() };
+}
+
+export function emptyData() {
+  return { tasks: [], history: [] };
 }
 
 export function isValidWeight(weight) {
@@ -62,6 +67,48 @@ export function cleanData(state) {
   };
 }
 
+const sameTask = (a, b) => a.name === b.name && a.weight === b.weight;
+const historyKey = entry => `${entry.at}:${entry.name}`;
+
+// Three-way merge of this device's data with the server's, task by task.
+// `base` is what both started from. Each side's adds, edits and deletes are
+// kept; if both changed the same task this device wins, and an edit beats a
+// delete so nothing typed is lost.
+export function mergeData(base, local, server) {
+  const baseTasks = new Map(base.tasks.map(t => [t.id, t]));
+  const localTasks = new Map(local.tasks.map(t => [t.id, t]));
+  const serverIds = new Set(server.tasks.map(t => t.id));
+  const changed = (task, id) => !baseTasks.has(id) || !sameTask(task, baseTasks.get(id));
+
+  const tasks = [];
+  for (const task of server.tasks) {
+    const mine = localTasks.get(task.id);
+    if (mine) tasks.push(changed(mine, task.id) ? mine : task);
+    else if (changed(task, task.id)) tasks.push(task); // new or edited there; else deleted here
+  }
+  for (const task of local.tasks) {
+    if (!serverIds.has(task.id) && changed(task, task.id)) tasks.push(task); // else deleted there
+  }
+
+  const localHistory = new Set(local.history.map(historyKey));
+  const serverHistory = new Set(server.history.map(historyKey));
+  // Entries either side removed (cleared, or pushed out by the length limit).
+  const removed = new Set(base.history.map(historyKey)
+    .filter(key => !localHistory.has(key) || !serverHistory.has(key)));
+  const seen = new Set();
+  const history = [...local.history, ...server.history]
+    .filter(entry => {
+      const key = historyKey(entry);
+      if (removed.has(key) || seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .sort((a, b) => b.at - a.at)
+    .slice(0, LIMITS.maxHistory);
+
+  return cleanData({ tasks: tasks.slice(0, LIMITS.maxTasks), history });
+}
+
 // Loads state from a Storage-like object, migrating the old `tasks` format.
 export function loadState(storage) {
   try {
@@ -69,7 +116,11 @@ export function loadState(storage) {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (validateData(parsed) === null && isValidVersion(parsed.version)) {
-        return { ...cleanData(parsed), version: parsed.version, dirty: parsed.dirty === true };
+        const data = cleanData(parsed);
+        const dirty = parsed.dirty === true;
+        // Saved before `base` existed: an unchanged device is its own base.
+        const base = validateData(parsed.base) === null ? cleanData(parsed.base) : dirty ? emptyData() : data;
+        return { ...data, version: parsed.version, dirty, base };
       }
     }
     const legacy = storage.getItem(LEGACY_KEY);
@@ -80,7 +131,7 @@ export function loadState(storage) {
           .filter(t => t && typeof t.name === 'string' && t.name.trim() !== '' && isValidWeight(Number(t.weight)))
           .slice(0, LIMITS.maxTasks)
           .map(t => ({ id: makeId(), name: t.name.slice(0, LIMITS.maxNameLength), weight: Number(t.weight) }));
-        return { tasks, history: [], version: 0, dirty: tasks.length > 0 };
+        return { tasks, history: [], version: 0, dirty: tasks.length > 0, base: emptyData() };
       }
     }
   } catch {
@@ -91,7 +142,9 @@ export function loadState(storage) {
 
 export function saveState(storage, state) {
   try {
-    storage.setItem(STORAGE_KEY, JSON.stringify({ ...cleanData(state), version: state.version, dirty: state.dirty }));
+    storage.setItem(STORAGE_KEY, JSON.stringify({
+      ...cleanData(state), version: state.version, dirty: state.dirty, base: cleanData(state.base),
+    }));
     storage.removeItem(LEGACY_KEY);
     return true;
   } catch {
